@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+
+# Manim output
+media/
+output/
+*.mp4
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.dvi
+
+# IDE
+.vscode/
+.idea/

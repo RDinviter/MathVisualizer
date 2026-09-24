@@ -1,5 +1,6 @@
 class Triga_a(Scene):
     def construct(self):
+        self.camera.background_color = "#121440"
         eq_text_a = Tex(r'a) Решите уравнение $2\cos\left({x-\frac{\pi}{3}}\right)+$'
                         r'$2\sin\left({\frac{3\pi}{2} + x}\right)=0$', font_size=25, color=GOLD_A).to_corner(UL, buff=0.4)
         eq_text_b = Tex(r"б) Найдите корни уравнения, принадлежащие отрезку $\left[-2\pi ; -\frac{\pi}{2}\right]$",
@@ -93,7 +94,7 @@ class Triga_a(Scene):
         self.play(Write(step_3_f))
 
         ans = Tex(r"a) $x=\frac{\pi}{6} + \pi k, k \in \mathbb{Z}.$", 
-            font_size=18,
+            font_size=24,
             color=GOLD)
         
         ans.next_to(step_3_f, DOWN, aligned_edge=LEFT)
@@ -121,6 +122,3 @@ class Triga_a(Scene):
 
         self.play(ans_group.animate.next_to(eq_box, DOWN, aligned_edge=LEFT))
         self.wait(2)
-
-
-

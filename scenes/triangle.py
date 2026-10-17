@@ -1,54 +1,3 @@
-from manim import *
-import numpy as np
-from manim import GrowFromCenter as Grow
-
-ELASTIC = dict(run_time=3, rate_func=rate_functions.ease_out_elastic)
-
-def setup_problem(
-    scene,
-    text,
-    font_size=24,
-    rect_color=YELLOW,
-    rect_buff=0.15,
-    rect_stroke_width=2,
-    scale_factor=0.8,
-    corner=UL,
-    corner_buff=0.2,
-    tex_to_color_map=None,
-    ):
-    """
-    Показывает условие задачи, обрамляет его рамкой и уводит в угол.
-    
-    Возвращает:
-        problem_group — VGroup с условием и рамкой (для дальнейшего использования)
-    """
-    # Создаём текст условия
-    problem = Tex(
-        text,
-        font_size=font_size,
-        tex_environment='flushleft',
-        tex_to_color_map=tex_to_color_map or {}
-    )
-
-    # Рамка вокруг условия
-    problem_rect = SurroundingRectangle(
-        problem,
-        color=rect_color,
-        buff=rect_buff,
-        stroke_width=rect_stroke_width
-    )
-
-    # Анимация появления
-    scene.play(Grow(problem, **ELASTIC))
-    scene.play(Create(problem_rect), run_time=1)
-
-    # Группируем и уводим в угол
-    problem_group = VGroup(problem, problem_rect)
-    scene.play(problem_group.animate.scale(scale_factor))
-    scene.play(problem_group.animate.to_corner(corner, buff=corner_buff))
-
-    return problem_group
-
 def project_point_onto_line(P, A, B):
     """проекция точки P на прямую, заданную точками A и B"""
     v = B - A                  
@@ -232,13 +181,40 @@ class Triangle(Scene):
         F = project_point_onto_line(O1, I_coord, P_coord)
         F = Dot(F, color=GREEN, radius=0.04)
 
+        F_text = Tex("$F$", color=YELLOW, font_size=34).next_to(F, UR, buff=0.1)
+        E_text = Tex("$E$", color=YELLOW, font_size=34).next_to(E, DOWN, buff=0.1)
+
+
         O1F = Line(O1, F, color=YELLOW)
         O1E = Line(O1, E, color=YELLOW)
+
+        AEO1_angle = RightAngle(
+            Line(E.get_center(), A.get_center()), 
+            Line(E.get_center(), O1),        
+            color=YELLOW,
+            length=0.2
+        )
+
+        O1FP_angle = RightAngle(
+            Line(F.get_center(), O1), 
+            Line(F.get_center(), P.get_center()),        
+            color=YELLOW,
+            length=0.2
+        )
+
         self.play(
             Create(E), Create(F),
             Create(O1E),
-            Create(O1F)
+            Create(O1F),
+            Write(F_text), 
+            Write(E_text)
         )
+
+        self.play(
+            Create(O1FP_angle),
+            Create(AEO1_angle)
+        )
+
 
         R_text_1 = Tex("$R$", font_size=34, color=WHITE)
         R_text_1.next_to(OP.get_center(), LEFT, buff=0.1)
@@ -246,6 +222,12 @@ class Triangle(Scene):
 
         R_text_2 = Tex("$R$", font_size=34, color=WHITE)
         R_text_2.next_to(OQ.get_center(), UP, buff=0.1)
+        R_text_2.set_opacity(0)
+
+        OB = Line(I_coord, B, color=WHITE)
+        self.play(Create(OB))
+
+        
 
         triangle_group = VGroup(
                 AB, BC, CA,                  
@@ -260,9 +242,16 @@ class Triangle(Scene):
                 incenter_new, O_new_text, 
                 incircle_new, 
                 E, F, O1F, O1E, 
-                R_text_1, R_text_2         
+                R_text_1, R_text_2,
+                E_text, F_text, 
+                AEO1_angle, O1FP_angle, 
+                OB         
             )
         self.play(triangle_group.animate.shift(3*RIGHT))
-        self.play(R_text_1.animate.set_opacity(1), Create(R_text_2))
+        self.remove(R_text_1, R_text_2)
+        
+        R_text_1.set_opacity(1)
+        R_text_2.set_opacity(1)
 
+        self.play(Write(R_text_1), Write(R_text_2))
         self.wait()

@@ -9,7 +9,16 @@ class SlidingTangent(Scene):
             y_range=[-1, 5, 1],
             x_length=8,
             y_length=6,
-            axis_config={"include_numbers": True, "font_size": 24}
+            axis_config={"include_numbers": True, "font_size": 24},
+            x_axis_config={
+                "tip_width": 0.15,
+                "tip_height": 0.15,
+            },
+            y_axis_config={
+                "tip_width": 0.15,
+                "tip_height": 0.15,
+                "tick_size": 0.08,
+            }
         )
         axes_labels = axes.get_axis_labels(x_label="x", y_label="y")
 
@@ -72,10 +81,12 @@ class SlidingTangent(Scene):
             p1 = axes.c2p(x, y)
             p2 = axes.c2p(x + dx, y)
             p3 = axes.c2p(x + dx, y + dy)
+            
 
             return Polygon(p1, p2, p3, color=GREEN, fill_opacity=0.2)
 
         triangle = always_redraw(get_slope_triangle)
+
 
         # 9. Анимация появления объектов
         self.play(Create(axes), Write(axes_labels))
